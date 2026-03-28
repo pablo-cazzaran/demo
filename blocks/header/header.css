@@ -1,7 +1,8 @@
 .overlay {
   z-index: 505;
   height: 100vh;
-  position: absolute;
+  /* stylelint-disable-next-line position */
+  position: fixed;
   transition: opacity .25s ease;
   opacity: 0;
   visibility: hidden !important;

@@ -22,11 +22,11 @@ export default async function decorate(block) {
   }
 
   // Create overlay element if it doesn't exist
-  let overlay = document.querySelector('.overlay');
+  let overlay = block.querySelector('.overlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.className = 'overlay';
-    document.body.append(overlay);
+    block.append(overlay);
   }
 
   // Add click event to the header block to toggle the dim overlay
