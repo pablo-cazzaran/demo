@@ -180,7 +180,6 @@ async function main() {
 
     // Output as JSON
     console.log(JSON.stringify(result, null, 2));
-
   } catch (error) {
     console.error(JSON.stringify({
       success: false,
@@ -198,4 +197,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 // Export functions for use by other scripts
-export { sanitizeFilename, sanitizePath, generateDocumentPath, generateDocumentPathInfo };
+export {
+  sanitizeFilename, sanitizePath, generateDocumentPath, generateDocumentPathInfo,
+};

@@ -162,7 +162,6 @@ async function loadLazy(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
-
     await loadSections(main);
   }
 
@@ -193,18 +192,6 @@ async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
-}
-
-try {
-  const url = new URL(import.meta.url);
-  window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
-} catch (error) {
-  // fallback if import.meta.url is somehow not supported
-  const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
-  if (scriptEl) {
-    const url = new URL(scriptEl.src);
-    window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
-  }
 }
 
 if (!window.hlx.suppressLoadPage) {

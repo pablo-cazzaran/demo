@@ -1,4 +1,5 @@
 export default function decorate(block) {
+  // eslint-disable-next-line no-console
   console.log(block);
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);

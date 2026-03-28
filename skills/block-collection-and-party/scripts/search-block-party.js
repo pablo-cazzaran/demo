@@ -34,8 +34,8 @@ function fetchUrl(url) {
   return new Promise((resolve, reject) => {
     https.get(url, {
       headers: {
-        'User-Agent': 'AdobeSkills/1.0 (https://github.com/adobe/skills; skill:block-collection-and-party)'
-      }
+        'User-Agent': 'AdobeSkills/1.0 (https://github.com/adobe/skills; skill:block-collection-and-party)',
+      },
     }, (res) => {
       let data = '';
 
@@ -128,7 +128,7 @@ async function getBlockPartyIndex() {
  */
 function getUniqueCategories(entries) {
   const categoryMap = new Map(); // lowercase -> original case
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     if (entry.category && entry.category.trim()) {
       const trimmed = entry.category.trim();
       const lower = trimmed.toLowerCase();
@@ -137,9 +137,7 @@ function getUniqueCategories(entries) {
       }
     }
   });
-  return Array.from(categoryMap.values()).sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase())
-  );
+  return Array.from(categoryMap.values()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 }
 
 /**
@@ -151,15 +149,13 @@ function validateCategory(category, availableCategories) {
   }
 
   const lowerCategory = category.toLowerCase();
-  const matchingCategory = availableCategories.find(cat =>
-    cat.toLowerCase() === lowerCategory || cat.toLowerCase().includes(lowerCategory)
-  );
+  const matchingCategory = availableCategories.find((cat) => cat.toLowerCase() === lowerCategory || cat.toLowerCase().includes(lowerCategory));
 
   if (!matchingCategory) {
     return {
       valid: false,
       error: `Category "${category}" not found.`,
-      availableCategories
+      availableCategories,
     };
   }
 
@@ -176,7 +172,7 @@ function filterByCategory(entries, category) {
 
   const lowerCategory = category.toLowerCase();
 
-  return entries.filter(entry => {
+  return entries.filter((entry) => {
     const entryCategory = (entry.category || '').toLowerCase();
     return entryCategory.includes(lowerCategory);
   });
@@ -190,18 +186,16 @@ function searchEntries(entries, searchTerms) {
     return entries;
   }
 
-  return entries.filter(entry => {
+  return entries.filter((entry) => {
     const searchableText = [
       entry.title || '',
       entry.description || '',
       entry.category || '',
-      entry.githubProfile || ''
+      entry.githubProfile || '',
     ].join(' ').toLowerCase();
 
     // Match all search terms (AND logic)
-    return searchTerms.every(term =>
-      searchableText.includes(term.toLowerCase())
-    );
+    return searchTerms.every((term) => searchableText.includes(term.toLowerCase()));
   });
 }
 
@@ -209,13 +203,13 @@ function searchEntries(entries, searchTerms) {
  * Format results for output
  */
 function formatResults(entries) {
-  return entries.map(entry => ({
+  return entries.map((entry) => ({
     title: entry.title || 'Untitled',
     category: entry.category || 'Unknown',
     description: entry.description || '',
     githubUrl: entry.githubUrl || '',
     showcaseUrl: entry.showcaseUrl || '',
-    githubProfile: entry.githubProfile || ''
+    githubProfile: entry.githubProfile || '',
   }));
 }
 
@@ -225,7 +219,7 @@ function formatResults(entries) {
 function parseArgs(args) {
   const result = {
     category: null,
-    searchTerms: []
+    searchTerms: [],
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -276,9 +270,7 @@ async function main() {
     const allEntries = indexData.data || [];
 
     // Filter to only approved entries
-    const approvedEntries = allEntries.filter(entry =>
-      entry.approved === 'Yes' || entry.approved === true || entry.approved === 'true'
-    );
+    const approvedEntries = allEntries.filter((entry) => entry.approved === 'Yes' || entry.approved === true || entry.approved === 'true');
 
     // Get available categories (from approved entries only)
     const availableCategories = getUniqueCategories(approvedEntries);
@@ -289,7 +281,7 @@ async function main() {
       console.error('Error:', validation.error);
       console.error('');
       console.error('Available categories:');
-      validation.availableCategories.forEach(cat => {
+      validation.availableCategories.forEach((cat) => {
         console.error(`  - ${cat}`);
       });
       process.exit(1);
@@ -313,14 +305,13 @@ async function main() {
       totalEntries: allEntries.length,
       approvedEntries: approvedEntries.length,
       matchCount: results.length,
-      results: results
+      results,
     };
 
     console.log(JSON.stringify(output, null, 2));
 
     // Exit with code 0 if results found, 1 if no results
     process.exit(results.length > 0 ? 0 : 1);
-
   } catch (error) {
     console.error('Error:', error.message);
     process.exit(1);

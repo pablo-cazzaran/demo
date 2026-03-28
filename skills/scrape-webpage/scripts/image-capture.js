@@ -95,7 +95,7 @@ export function setupImageCapture(page, outputDir, options = {}) {
     skipped: 0,
     failed: 0,
     tooLarge: 0,
-    limitReached: 0
+    limitReached: 0,
   };
 
   // Handler for request event - track image requests as they start
@@ -207,7 +207,6 @@ export function setupImageCapture(page, outputDir, options = {}) {
         stats.skipped++;
         console.error(`✓ Captured (${format}): ${url.slice(0, 50)}... → ./images/${filename}`);
       }
-
     } catch (error) {
       console.error(`✗ Failed to capture ${url.slice(0, 50)}...: ${error.message}`);
       stats.failed++;
@@ -248,7 +247,7 @@ export async function waitForPendingImages(captureState, timeout = 5000) {
       console.error(`⚠️  Timeout waiting for ${pendingImages.size} pending images after ${timeout}ms`);
       break;
     }
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 }
 

@@ -51,7 +51,7 @@ async function scrollToTriggerLazyLoad(page) {
       let totalHeight = 0;
       const distance = 100;
       const timer = setInterval(() => {
-        const scrollHeight = document.body.scrollHeight;
+        const { scrollHeight } = document.body;
         window.scrollBy(0, distance);
         totalHeight += distance;
         if (totalHeight >= scrollHeight) {
@@ -62,7 +62,6 @@ async function scrollToTriggerLazyLoad(page) {
     });
   });
 }
-
 
 /**
  * Fix images in the DOM to ensure none are missed during extraction
@@ -230,7 +229,7 @@ function formatHtml(html) {
 
   const lines = html.split('\n');
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const trimmed = line.trim();
     if (!trimmed) return;
 
@@ -240,7 +239,7 @@ function formatHtml(html) {
     }
 
     // Add indentation
-    formatted += ' '.repeat(indent * indentSize) + trimmed + '\n';
+    formatted += `${' '.repeat(indent * indentSize) + trimmed}\n`;
 
     // Increase indent for opening tags (but not self-closing or immediately closed)
     if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>') && !trimmed.match(/<[^>]+>.*<\/[^>]+>$/)) {
@@ -258,18 +257,18 @@ async function extractCleanedHTML(page) {
   const html = await page.evaluate(() => {
     // 1. Remove non-content elements
     const selectorsToRemove = [
-      'script', 'style', 'noscript'
+      'script', 'style', 'noscript',
     ];
 
-    selectorsToRemove.forEach(selector => {
-      document.querySelectorAll(selector).forEach(el => el.remove());
+    selectorsToRemove.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((el) => el.remove());
     });
 
     // 2. CRITICAL: Preserve essential attributes, strip all others
     const keepAttributes = ['src', 'href', 'alt', 'title', 'class', 'id'];
-    document.body.querySelectorAll('*').forEach(el => {
+    document.body.querySelectorAll('*').forEach((el) => {
       const attrs = Array.from(el.attributes);
-      attrs.forEach(attr => {
+      attrs.forEach((attr) => {
         if (!keepAttributes.includes(attr.name)) {
           el.removeAttribute(attr.name);
         }
@@ -296,7 +295,7 @@ async function extractMetadata(page) {
     if (titleTag) meta.title = titleTag.textContent.trim();
 
     // Extract all meta tags
-    document.querySelectorAll('meta').forEach(tag => {
+    document.querySelectorAll('meta').forEach((tag) => {
       const name = tag.getAttribute('name') || tag.getAttribute('property');
       const content = tag.getAttribute('content');
       if (name && content) meta[name] = content;
@@ -405,19 +404,19 @@ async function analyzeWebpage(url, outputDir) {
         htmlFilePath: paths.htmlFilePath,
         mdFilePath: paths.mdFilePath,
         dirPath: paths.dirPath,
-        filename: paths.filename
+        filename: paths.filename,
       },
       screenshot,
       html: {
         filePath: htmlPath,
-        size: html.length
+        size: html.length,
       },
       metadata,
       images: {
         count: captureState.imageMap.size,
         mapping: Object.fromEntries(captureState.imageMap),
-        stats: captureState.stats
-      }
+        stats: captureState.stats,
+      },
     };
 
     // Save metadata.json file
@@ -492,4 +491,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { analyzeWebpage, scrollToTriggerLazyLoad, extractCleanedHTML, extractMetadata };
+export {
+  analyzeWebpage, scrollToTriggerLazyLoad, extractCleanedHTML, extractMetadata,
+};

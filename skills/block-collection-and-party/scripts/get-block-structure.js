@@ -53,7 +53,7 @@ function simplifyHTML(html) {
       const altMatch = match.match(/alt="([^"]*)"/);
       const alt = altMatch ? ` alt="${altMatch[1]}"` : '';
       return `<picture><img src="${src}"${alt}></picture>`;
-    }
+    },
   );
 
   // Compact whitespace but preserve structure
@@ -82,7 +82,7 @@ function analyzeStructure(html, blockName) {
 
   rows.forEach((row, i) => {
     const cols = Array.from(row.children);
-    const colDescriptions = cols.map(col => {
+    const colDescriptions = cols.map((col) => {
       const elements = [];
       if (col.querySelector('picture')) elements.push('image');
       if (col.querySelector('h1, h2, h3, h4, h5, h6')) elements.push('heading');
@@ -115,7 +115,7 @@ async function getBlockStructure(blockName) {
           success: false,
           error: `Block "${blockName}" not found in Block Collection`,
           url,
-          suggestion: 'Use search-block-collection-github.js to find available blocks'
+          suggestion: 'Use search-block-collection-github.js to find available blocks',
         };
       }
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -133,7 +133,7 @@ async function getBlockStructure(blockName) {
     let sourceCodeUrl = null;
 
     // Process each section
-    sections.forEach(section => {
+    sections.forEach((section) => {
       const metadata = section.querySelector('.library-metadata');
 
       if (metadata) {
@@ -141,7 +141,7 @@ async function getBlockStructure(blockName) {
         const metadataRows = Array.from(metadata.children);
         const metadataObj = {};
 
-        metadataRows.forEach(row => {
+        metadataRows.forEach((row) => {
           const cells = Array.from(row.children);
           if (cells.length === 2) {
             const key = cells[0].textContent.trim();
@@ -172,7 +172,7 @@ async function getBlockStructure(blockName) {
           variants.push({
             name: metadataObj.name,
             html: simplifiedHTML,
-            structure
+            structure,
           });
         }
       }
@@ -182,7 +182,7 @@ async function getBlockStructure(blockName) {
       return {
         success: false,
         error: `No block examples found in ${url}`,
-        url
+        url,
       };
     }
 
@@ -197,16 +197,15 @@ async function getBlockStructure(blockName) {
       totalVariants: variants.length,
       usage: {
         purpose: 'Pre-decoration HTML structure examples',
-        note: 'This shows the HTML structure BEFORE JavaScript decoration. Use this to understand the expected content model when authoring content or generating HTML.'
-      }
+        note: 'This shows the HTML structure BEFORE JavaScript decoration. Use this to understand the expected content model when authoring content or generating HTML.',
+      },
     };
-
   } catch (error) {
     return {
       success: false,
       error: error.message,
       url,
-      blockName
+      blockName,
     };
   }
 }
@@ -223,8 +222,8 @@ async function main() {
       examples: [
         'node get-block-structure.js accordion',
         'node get-block-structure.js cards',
-        'node get-block-structure.js tabs'
-      ]
+        'node get-block-structure.js tabs',
+      ],
     }, null, 2));
     process.exit(1);
   }
