@@ -155,16 +155,25 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  const header = doc.querySelector('header');
+  if (header) {
+    loadHeader(header);
+  }
 
   const main = doc.querySelector('main');
-  await loadSections(main);
+  if (main) {
+
+    await loadSections(main);
+  }
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadFooter(doc.querySelector('footer'));
+  const footer = doc.querySelector('footer');
+  if (footer) {
+    loadFooter(footer);
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -186,4 +195,18 @@ async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+try {
+  const url = new URL(import.meta.url);
+  window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
+} catch (error) {
+  // fallback if import.meta.url is somehow not supported
+  const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
+  if (scriptEl) {
+    const url = new URL(scriptEl.src);
+    window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
+  }
+}
+
+if (!window.hlx.suppressLoadPage) {
+  loadPage();
+}

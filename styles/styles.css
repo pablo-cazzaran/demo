@@ -10,7 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-:root {
+:root,
+:host {
   /* colors */
   --background-color: white;
   --light-color: #f8f8f8;
@@ -82,10 +83,6 @@ body {
 
 body.appear {
   display: block;
-}
-
-header {
-  height: var(--nav-height);
 }
 
 header .header,
