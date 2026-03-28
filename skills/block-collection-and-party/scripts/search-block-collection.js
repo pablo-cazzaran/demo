@@ -25,8 +25,8 @@ function fetchUrl(url, parseJson = false) {
   return new Promise((resolve, reject) => {
     https.get(url, {
       headers: {
-        'User-Agent': 'AdobeSkills/1.0 (https://github.com/adobe/skills; skill:block-collection-and-party)'
-      }
+        'User-Agent': 'AdobeSkills/1.0 (https://github.com/adobe/skills; skill:block-collection-and-party)',
+      },
     }, (res) => {
       let data = '';
 
@@ -71,7 +71,7 @@ function parseBlocksFromNav(html) {
 
     blocks.push({
       name: urlSlug,
-      displayName: displayName
+      displayName,
     });
   }
 
@@ -97,7 +97,7 @@ function isDefaultContent(blockName) {
   // Default Content items don't have block implementations
   const defaultContentItems = [
     'breadcrumbs', 'buttons', 'code', 'headings', 'icons', 'images',
-    'links', 'lists', 'metadata', 'section-metadata', 'sections', 'text'
+    'links', 'lists', 'metadata', 'section-metadata', 'sections', 'text',
   ];
   return defaultContentItems.includes(blockName.toLowerCase());
 }
@@ -109,17 +109,16 @@ function searchBlocks(blocks, searchTerm) {
   const lowerSearchTerm = searchTerm.toLowerCase();
 
   return blocks
-    .filter(block => {
+    .filter((block) =>
       // Search in both the URL slug and display name
-      return block.name.toLowerCase().includes(lowerSearchTerm) ||
-             block.displayName.toLowerCase().includes(lowerSearchTerm);
-    })
-    .map(block => {
+      block.name.toLowerCase().includes(lowerSearchTerm)
+             || block.displayName.toLowerCase().includes(lowerSearchTerm))
+    .map((block) => {
       const result = {
         name: block.name,
         displayName: block.displayName,
         type: isDefaultContent(block.name) ? 'default-content' : 'block',
-        liveExampleUrl: `${SITE_BASE_URL}/block-collection/${block.name}`
+        liveExampleUrl: `${SITE_BASE_URL}/block-collection/${block.name}`,
       };
 
       // Only add code URLs for actual blocks (not default content)
@@ -163,14 +162,13 @@ async function main() {
       repository: `${REPO_BASE_URL}`,
       totalItems: blocks.length,
       matchCount: results.length,
-      results: results
+      results,
     };
 
     console.log(JSON.stringify(output, null, 2));
 
     // Exit with code 0 if results found, 1 if no results
     process.exit(results.length > 0 ? 0 : 1);
-
   } catch (error) {
     console.error('Error:', error.message);
     process.exit(1);

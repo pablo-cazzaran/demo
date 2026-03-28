@@ -14,7 +14,7 @@ const USER_AGENT = 'AdobeSkills/1.0 (https://github.com/adobe/skills; skill:docs
 // Stop words to ignore in searches
 const STOP_WORDS = new Set([
   'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-  'aem', 'cms', 'edge', 'delivery', 'services'
+  'aem', 'cms', 'edge', 'delivery', 'services',
 ]);
 
 // Scoring weights
@@ -23,7 +23,7 @@ const SCORE_WEIGHTS = {
   DESCRIPTION: 5,
   CONTENT: 1,
   MULTI_KEYWORD_MULTIPLIER: 1.5,
-  DEPRECATION_PENALTY: 0.5 // Multiply score by 0.5 if deprecated
+  DEPRECATION_PENALTY: 0.5, // Multiply score by 0.5 if deprecated
 };
 
 /**
@@ -68,8 +68,8 @@ async function fetchWithCache(url, cacheFileName) {
  */
 function filterKeywords(keywords) {
   return keywords
-    .map(k => k.toLowerCase().trim())
-    .filter(k => k.length > 0 && !STOP_WORDS.has(k));
+    .map((k) => k.toLowerCase().trim())
+    .filter((k) => k.length > 0 && !STOP_WORDS.has(k));
 }
 
 /**
@@ -89,7 +89,7 @@ function cleanContent(text) {
   if (!text) return '';
 
   // Remove common noise patterns at the start
-  let cleaned = text
+  const cleaned = text
     .replace(/^style\s+content\s+/i, '')
     .replace(/^\s*\n+/, '')
     .trim();
@@ -273,7 +273,7 @@ function searchDocuments(docs, keywords, type = 'doc') {
         snippet,
         type,
         deprecation: doc.deprecation || null,
-        relevanceScore: score
+        relevanceScore: score,
       });
     }
   }
@@ -296,7 +296,7 @@ async function search(keywords, limit = 10) {
   // Fetch indexes
   const [docpagesIndex, queryIndex] = await Promise.all([
     fetchWithCache('https://www.aem.live/docpages-index.json', 'docpages-index.json'),
-    fetchWithCache('https://www.aem.live/query-index.json', 'query-index.json')
+    fetchWithCache('https://www.aem.live/query-index.json', 'query-index.json'),
   ]);
 
   // Create a map of deprecation warnings from query-index
@@ -308,15 +308,15 @@ async function search(keywords, limit = 10) {
   }
 
   // Search docpages first and merge deprecation data
-  let docpagesData = docpagesIndex.data.map(doc => ({
+  const docpagesData = docpagesIndex.data.map((doc) => ({
     ...doc,
-    deprecation: deprecationMap.get(doc.path) || doc.deprecation || null
+    deprecation: deprecationMap.get(doc.path) || doc.deprecation || null,
   }));
   let results = searchDocuments(docpagesData, filteredKeywords, 'doc');
 
   // If less than 5 results, search blog posts too
   if (results.length < 5) {
-    const blogPosts = queryIndex.data.filter(doc => doc.path.startsWith('/blog/'));
+    const blogPosts = queryIndex.data.filter((doc) => doc.path.startsWith('/blog/'));
     const blogResults = searchDocuments(blogPosts, filteredKeywords, 'blog');
     results = [...results, ...blogResults].sort((a, b) => b.relevanceScore - a.relevanceScore);
   }
