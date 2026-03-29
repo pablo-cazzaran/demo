@@ -257,6 +257,7 @@ function buildNavDrawer(block, navLinks, utilityLinks, hamburger, overlay) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
+  let nav;
   if (block.textContent === '') {
     // load nav as fragment
     const navMeta = getMetadata('nav');
@@ -264,7 +265,7 @@ export default async function decorate(block) {
     const fragment = await loadFragment(navPath);
     // decorate nav DOM
     block.textContent = '';
-    const nav = document.createElement('nav');
+    nav = document.createElement('nav');
     nav.id = 'nav';
     while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
     block.append(nav);
