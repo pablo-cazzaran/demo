@@ -15,10 +15,11 @@ import {
 // Setup hlx object and codeBasePath for potential external embeds
 window.hlx = window.hlx || {};
 window.hlx.codeBasePath = window.hlx.codeBasePath || '';
-if (window.hlx.codeBasePath === '' && !window.location.hostname.includes('aem.live') && !window.location.hostname.includes('aem.page') && !window.location.hostname.includes('localhost')) {
+if (!window.location.hostname.includes('aem.live') && !window.location.hostname.includes('aem.page') && !window.location.hostname.includes('localhost')) {
   const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
   if (scriptEl) {
     try {
+      // Force absolute AEM origin and strip any host-specific subfolders
       window.hlx.codeBasePath = new URL(scriptEl.src).origin;
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -151,50 +152,37 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    document.body.classList.add('appear');
+    await loadSection(main.querySelector('.section'), waitForFirstImage);
+  }
 
+  try {
+    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
+    if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
+      loadFonts();
+    }
+  } catch (e) {
+    // do nothing
+  }
+}
+
+/**
+ * Loads everything that doesn't need to be delayed.
+ * @param {Element} doc The container element
+ */
+async function loadLazy(doc) {
+  const header = doc.querySelector('header');
+  if (header) {
+    loadHeader(header);
+  }
+
+  const main = doc.querySelector('main');
+  if (main) {
     await loadSections(main);
   }
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
-
-  const footer = doc.querySelector('footer');
-  if (footer) {
-    loadFooter(footer);
-  }
-
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  loadFonts();
-}
-
-/**
- * Loads everything that happens a lot later,
- * without impacting the user experience.
- */
-function loadDelayed() {
-  // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
-  // load anything that can be postponed to the latest here
-}
-
-async function loadPage() {
-  await loadEager(document);
-  await loadLazy(document);
-  loadDelayed();
-}
-
-try {
-  const url = new URL(import.meta.url);
-  window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
-} catch (error) {
-  // fallback if import.meta.url is somehow not supported
-  const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
-  if (scriptEl) {
-    const url = new URL(scriptEl.src);
-    window.hlx.codeBasePath = `${url.origin}${url.pathname.split('/scripts/scripts.js')[0]}`;
-  }
-  etElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
   const footer = doc.querySelector('footer');
