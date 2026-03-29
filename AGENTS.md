@@ -181,6 +181,14 @@ With this information, you can construct URLs for the preview environment (same 
 - Follow the Publishing Process documented above
 - Update documentation for significant changes
 
+## Design Guidelines
+
+See @docs/design-guidelines.md. Although they're not guidelines on how to code the website, It's always important to keep them in mind.
+
+## Company-specific Coding Standards
+
+See @docs/coding-standards.md
+
 ## Docs
 
 - [Getting Started - Developer Tutorial](https://www.aem.live/developer/tutorial.md)
