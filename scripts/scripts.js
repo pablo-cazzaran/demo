@@ -12,6 +12,21 @@ import {
   loadCSS,
 } from './aem.js';
 
+// Setup hlx object and codeBasePath for potential external embeds
+window.hlx = window.hlx || {};
+window.hlx.codeBasePath = window.hlx.codeBasePath || '';
+if (window.hlx.codeBasePath === '' && !window.location.hostname.includes('aem.live') && !window.location.hostname.includes('aem.page') && !window.location.hostname.includes('localhost')) {
+  const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
+  if (scriptEl) {
+    try {
+      window.hlx.codeBasePath = new URL(scriptEl.src).origin;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('Could not determine hlx.codeBasePath', e);
+    }
+  }
+}
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
