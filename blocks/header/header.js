@@ -257,17 +257,18 @@ function buildNavDrawer(block, navLinks, utilityLinks, hamburger, overlay) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  let nav;
-  if (block.textContent === '') {
-    // load nav as fragment
+  // Check if nav is already in the block
+  let nav = block.querySelector('nav');
+  if (!nav) {
+    // Load nav as authored fragment (standard AEM pattern)
     const navMeta = getMetadata('nav');
     const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
     const fragment = await loadFragment(navPath);
-    // decorate nav DOM
+
     block.textContent = '';
     nav = document.createElement('nav');
     nav.id = 'nav';
-    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+    while (fragment && fragment.firstElementChild) nav.append(fragment.firstElementChild);
     block.append(nav);
   }
 
