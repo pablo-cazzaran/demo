@@ -257,16 +257,19 @@ function buildNavDrawer(block, navLinks, utilityLinks, hamburger, overlay) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // Always load the nav fragment (standard AEM boilerplate pattern)
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
-
-  block.textContent = '';
-  const nav = document.createElement('nav');
-  nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
-  block.append(nav);
+  let nav;
+  if (block.textContent === '') {
+    // load nav as fragment
+    const navMeta = getMetadata('nav');
+    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+    const fragment = await loadFragment(navPath);
+    // decorate nav DOM
+    block.textContent = '';
+    nav = document.createElement('nav');
+    nav.id = 'nav';
+    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+    block.append(nav);
+  }
 
   // Ensure overlay exists inside block (needed for Shadow DOM CSS scoping)
   let overlay = block.querySelector('.overlay');
