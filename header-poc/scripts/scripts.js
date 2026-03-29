@@ -150,7 +150,8 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
-    decorateMain(m
+    decorateMain(main);
+
     await loadSections(main);
   }
 
