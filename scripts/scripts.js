@@ -15,10 +15,11 @@ import {
 // Setup hlx object and codeBasePath for potential external embeds
 window.hlx = window.hlx || {};
 window.hlx.codeBasePath = window.hlx.codeBasePath || '';
-if (window.hlx.codeBasePath === '' && !window.location.hostname.includes('aem.live') && !window.location.hostname.includes('aem.page') && !window.location.hostname.includes('localhost')) {
+if (!window.location.hostname.includes('aem.live') && !window.location.hostname.includes('aem.page') && !window.location.hostname.includes('localhost')) {
   const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
   if (scriptEl) {
     try {
+      // Force absolute AEM origin and strip any host-specific subfolders
       window.hlx.codeBasePath = new URL(scriptEl.src).origin;
     } catch (e) {
       // eslint-disable-next-line no-console
