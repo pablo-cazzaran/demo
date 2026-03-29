@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Embed PoC</title>
+    <!-- Mock styles.css missing context -->
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; }
+        .content { padding: 2rem; background: #f0f0f0; height: 2000px; }
+    </style>
+    <!-- Load Header Styles -->
+    <link rel="stylesheet" href="/blocks/header/header.css">
+</head>
+<body>
+    <header class="header block" data-block-name="header">
+        <div>
+            <div><a href="/nav">Nav</a></div>
+        </div>
+    </header>
+
+    <div class="content">
+        <h1>External Website Content</h1>
+        <p>This is a simulation of the header embedded in another site.</p>
+    </div>
+
+    <!-- Mock EDS environment -->
+    <script type="module">
+        import decorate from '/blocks/header/header.js';
+        
+        // Mock getMetadata
+        window.getMetadata = (name) => {
+            if (name === 'nav') return '/nav';
+            return '';
+        };
+
+        // Mock loadFragment
+        window.loadFragment = async (path) => {
+            const resp = await fetch(path + '.plain.html');
+            if (resp.ok) {
+                const html = await resp.text();
+                const div = document.createElement('div');
+                div.innerHTML = html;
+                // Basic decoration for mock
+                div.querySelectorAll('div').forEach(sec => sec.classList.add('section'));
+                div.querySelectorAll('div > div').forEach(wrap => wrap.classList.add('default-content-wrapper'));
+                return div;
+            }
+            return document.createElement('div');
+        };
+
+        const headerBlock = document.querySelector('.header');
+        decorate(headerBlock);
+    </script>
+</body>
+</html>
